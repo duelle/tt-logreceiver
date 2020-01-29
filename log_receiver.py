@@ -15,7 +15,7 @@ def build_triggered():
 
   line = str(now) + ";" + "triggered" + '\n'
 
-  with open('/tmp/' + build_uuid + '.log', "a") as log_file:
+  with open('/tmp/lr_' + build_uuid + '.log', "a") as log_file:
     log_file.write(str(build_uuid) + '\n')
     log_file.write(line)
 
@@ -41,7 +41,7 @@ def job_started():
            + str(job_web_url) + ";" \
            + '\n'
 
-  with open('/tmp/' + build_uuid + '.log', "a") as log_file:
+  with open('/tmp/lr_' + build_uuid + '.log', "a") as log_file:
     log_file.write(line)
 
   return line, status.HTTP_200_OK
