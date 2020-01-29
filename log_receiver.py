@@ -70,7 +70,7 @@ def job_finished():
 
   time.sleep(10)
 
-  urllib.urlretrieve('https://api.travis-ci.com/v3/job/' + job_id + '/log.txt', '/tmp/lr_tr_' + build_uuid + '-' + build_id + '-' + job_id + '.log')
+  urllib.request.urlretrieve('https://api.travis-ci.com/v3/job/' + job_id + '/log.txt', '/tmp/lr_tr_' + build_uuid + '-' + build_id + '-' + job_id + '.log')
 
   return line, status.HTTP_200_OK
 
