@@ -68,7 +68,7 @@ def job_finished():
   with open('/tmp/lr_' + build_uuid + '.log', "a") as log_file:
     log_file.write(line)
 
-  time.sleep(20)
+  time.sleep(30)
 
   urllib.request.urlretrieve('https://api.travis-ci.com/v3/job/' + job_id + '/log.txt', '/tmp/lr_tr_' + build_uuid + '-' + build_id + '-' + job_id + '.log')
 
