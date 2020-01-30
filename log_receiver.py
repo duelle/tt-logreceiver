@@ -17,25 +17,22 @@ def build_triggered():
   now = datetime.datetime.now()
   build_uuid = request.form['build_uuid'].strip()
 
-  line = str(now) + 'triggered'
-
   with open(tempdir + os.sep + build_uuid + '.csv', 'a') as log_file:
     log_file.write(log_header + '\n')
     log_file.write(str(build_uuid) + ';"' + str(now) + '";')
 
-  return line, status.HTTP_200_OK
+  return str(now) + 'triggered', status.HTTP_200_OK
 
 
 @app.route('/job/started/', methods=['POST'])
 def job_started():
   now = datetime.datetime.now()
-
   build_uuid = request.form['build_uuid'].strip()
 
   with open(tempdir + os.sep + build_uuid + '.csv', 'a') as log_file:
     log_file.write('"' + str(now) + '";')
 
-  return line, status.HTTP_200_OK
+  return str(now) + 'started', status.HTTP_200_OK
 
 
 @app.route('/job/finished/', methods=['POST'])
@@ -51,7 +48,6 @@ def job_finished():
   time.sleep(10)
 
   tt_logfile = tempdir + os.sep + build_uuid + '-' + build_id + '-' + job_id + '.log'
-
   urllib.request.urlretrieve('https://api.travis-ci.com/v3/job/' + job_id + '/log.txt', tt_logfile)
 
   startup_duration = ''
@@ -73,7 +69,7 @@ def job_finished():
   with open(tempdir + os.sep + build_uuid + '.csv', 'a') as log_file:
     log_file.write(line)
 
-  return line, status.HTTP_200_OK
+  return str(now) + 'finished', status.HTTP_200_OK
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0')
