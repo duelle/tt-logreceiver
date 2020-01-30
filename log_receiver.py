@@ -10,7 +10,7 @@ import os
 app = Flask(__name__)
 tempdir = tempfile.mkdtemp(prefix='tt_logreceiver_')
 print('tempdir is: ' + tempdir)
-log_header = 'uuid;datetime_triggered;datetime_started;datetime_finished;build_id;job_id;startup_duration;build_url;job_url'
+log_header = 'uuid;datetime_started;datetime_finished;build_id;job_id;startup_duration;build_url;job_url'
 
 @app.route('/build/triggered/', methods=['POST'])
 def build_triggered():
@@ -18,8 +18,8 @@ def build_triggered():
   build_uuid = request.form['build_uuid'].strip()
 
   with open(tempdir + os.sep + build_uuid + '.csv', 'a') as log_file:
-    log_file.write(log_header + '\n')
-    log_file.write(str(build_uuid) + ';"' + str(now) + '";')
+    log_file.write('uuid;datetime_triggered\n')
+    log_file.write(str(build_uuid) + ';"' + str(now) + '\n')
 
   return str(now) + 'triggered', status.HTTP_200_OK
 
@@ -28,8 +28,11 @@ def build_triggered():
 def job_started():
   now = datetime.datetime.now()
   build_uuid = request.form['build_uuid'].strip()
+  build_id = request.form['build_id'].strip()
+  job_id = request.form['job_id'].strip()
 
-  with open(tempdir + os.sep + build_uuid + '.csv', 'a') as log_file:
+  with open(tempdir + os.sep + build_uuid + '-jobs.csv', 'a') as log_file:
+    log_file.write(log_header + '\n')
     log_file.write('"' + str(now) + '";')
 
   return str(now) + 'started', status.HTTP_200_OK
@@ -47,7 +50,7 @@ def job_finished():
 
   time.sleep(10)
 
-  tt_logfile = tempdir + os.sep + build_uuid + '-' + build_id + '-' + job_id + '.log'
+  tt_logfile = tempdir + os.sep + build_uuid + '-raw.log'
   urllib.request.urlretrieve('https://api.travis-ci.com/v3/job/' + job_id + '/log.txt', tt_logfile)
 
   startup_duration = ''
@@ -66,7 +69,7 @@ def job_finished():
            + '"' + str(job_web_url) + '";' \
            + '\n'
 
-  with open(tempdir + os.sep + build_uuid + '.csv', 'a') as log_file:
+  with open(tempdir + os.sep + build_uuid + '-jobs.csv', 'a') as log_file:
     log_file.write(line)
 
   return str(now) + 'finished', status.HTTP_200_OK
