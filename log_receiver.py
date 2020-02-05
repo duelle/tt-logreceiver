@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from flask import Flask, escape, make_response, request, send_file
 from flask_api import status
 import json
