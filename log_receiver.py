@@ -31,7 +31,7 @@ def job_started():
   build_id = request.form['build_id'].strip()
   job_id = request.form['job_id'].strip()
 
-  with open(tempdir + os.sep + build_uuid + '-jobs.csv', 'a') as log_file:
+  with open(tempdir + os.sep + build_uuid + '-' + job_id + '.csv', 'a') as log_file:
     log_file.write(log_header + '\n')
     log_file.write('"' + str(now) + '";')
 
@@ -50,7 +50,7 @@ def job_finished():
 
   time.sleep(10)
 
-  tt_logfile = tempdir + os.sep + build_uuid + '-raw.log'
+  tt_logfile = tempdir + os.sep + build_uuid + '-' + job_id + '-raw.log'
   urllib.request.urlretrieve('https://api.travis-ci.com/v3/job/' + job_id + '/log.txt', tt_logfile)
 
   startup_duration = ''
@@ -60,7 +60,6 @@ def job_finished():
         startup_duration = line.split(':')[1].strip()
         break;
 
-
   line = '"' + str(now) + '";' \
            + str(build_id) + ';' \
            + str(job_id) + ';' \
@@ -69,7 +68,7 @@ def job_finished():
            + '"' + str(job_web_url) + '";' \
            + '\n'
 
-  with open(tempdir + os.sep + build_uuid + '-jobs.csv', 'a') as log_file:
+  with open(tempdir + os.sep + build_uuid + '-' + job_id + '.csv', 'a') as log_file:
     log_file.write(line)
 
   return str(now) + 'finished', status.HTTP_200_OK
